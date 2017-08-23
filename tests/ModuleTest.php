@@ -116,4 +116,26 @@ class ModuleTest extends BaseTestCase
         $this->assertFalse($this->module->notActive());
         $this->assertFalse($this->module->disabled());
     }
+
+    /** @test */
+    public function it_fires_events_when_module_is_disabled()
+    {
+        \Event::fake();
+
+        $this->module->disable();
+
+        \Event::assertDispatched(sprintf('modules.%s.disabling', $this->module->getLowerName()));
+        \Event::assertDispatched(sprintf('modules.%s.disabled', $this->module->getLowerName()));
+    }
+
+    /** @test */
+    public function it_fires_events_when_module_is_enabled()
+    {
+        \Event::fake();
+
+        $this->module->enable();
+
+        \Event::assertDispatched(sprintf('modules.%s.enabled', $this->module->getLowerName()));
+        \Event::assertDispatched(sprintf('modules.%s.enabling', $this->module->getLowerName()));
+    }
 }
